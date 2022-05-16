@@ -7,8 +7,8 @@
    <el-card :body-style="{ padding: '0px' }">
    <table>
     <tr>
-      <td>Резюме:	</td>
-       <td><div v-html="Summary"> </div></td>
+      <td class="td">{{lSummary}}:	</td>
+       <td><div v-html="Summary" class="text-left"> </div></td>
       
     </tr>
     </table>
@@ -19,8 +19,8 @@
    <el-card :body-style="{ padding: '0px' }">
    <table>
     <tr>
-      <td>Цел:	</td>
-      <td><div v-html="Purpose"> </div></td>
+      <td class="td">{{lPurpose}}:	</td>
+      <td><div v-html="Purpose" class="text-left"> </div></td>
     </tr>
     </table>
    </el-card>
@@ -29,8 +29,8 @@
    <el-card :body-style="{ padding: '0px' }">
    <table>
     <tr>
-      <td>Значение:	</td>
-      <td><div v-html="Meaning"> </div></td>
+      <td class="td">{{lMeaning}}:	</td>
+      <td><div v-html="Meaning" class="text-left"> </div></td>
        
         
      
@@ -43,8 +43,8 @@
    <el-card :body-style="{ padding: '0px' }">
    <table>
     <tr>
-      <td>Предизвикателства:	</td>
-      <td><div v-html="Challenges"> </div></td>
+      <td class="td">{{lChallenges}}:	</td>
+      <td><div v-html="Challenges" class="text-left"> </div></td>
       
         
         
@@ -58,8 +58,8 @@
    <el-card :body-style="{ padding: '0px' }">
    <table>
     <tr>
-      <td>Научна област:</td>
-        <td><div v-html="Scientific"> </div></td>
+      <td class="td ">{{lScientific}}:</td>
+        <td><div v-html="Scientific" class="text-left"> </div></td>
        
         
      
@@ -96,26 +96,43 @@ export default {
      Meaning:'',
      Challenges:'',
      Scientific:'',
-
+     lSummary:'Резюме',
+     lPurpose:'Цел',
+     lMeaning:'Значение',
+     lChallenges:'Предизвикателства',
+     lScientific:'Научна област',
     }
   },
   mounted(){
     this.loadData();
+    this.changeLang();
   },
   methods:{
    async loadData(){
       await axios.get(`${Path}/getHomedata.php`)
   .then((response)=> {
    
-    console.log(response);
+    
     this.Summary=response.data[0].Summary;
     this.Purpose=response.data[0].Purpose;
     this.Meaning=response.data[0].Meaning;
     this.Challenges=response.data[0].Challenges;
     this.Scientific=response.data[0]['Scientific field'];
   })
+    },
+    changeLang(){
+  if(sessionStorage.lang){
+    if(sessionStorage.lang==="en"){
+      this.lSummary="Summary";
+      this.lPurpose="The Aim";
+      this.lMeaning="Meaning";
+      this.lChallenges="Challenges";
+      this.lScientific="Scientific field";
+      
     }
   }
+  }
+}
 }
 </script>
 <style>
@@ -129,6 +146,15 @@ li{
 .el-card{
   width: 100%;
  
+}
+
+.text-left{
+  text-align: left;
+}
+.td{
+  width:180px ;
+  vertical-align: top;
+  font-weight: bold;
 }
 
 </style>

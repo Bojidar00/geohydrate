@@ -1,16 +1,15 @@
 <template>
-  <div class="about">
+<el-card class="box-card news" >
+  <div >
     <h1>{{data.title}}</h1>
     <img :src="getImgUrl()"
           
           class="image"
           
-        />
-        <div>
-          {{data.content}}
-        </div>
+        /> 
+        <div v-html="data.content"> </div>
   </div>
-
+</el-card>
 
 </template>
 <script>
@@ -44,13 +43,14 @@ export default {
       window.open(Index);
     },
 
-    loadNews(){
+   async loadNews(){
 
-      console.log(this.$route.params.id);
-      axios.get(`${Path}/news.php?id=${this.$route.params.id}`)
+      
+      await axios.get(`${Path}/news.php?id=${this.$route.params.id}`)
   .then((response)=> {
     // handle success
-    this.data=response.data;
+    this.data=response.data[0];
+   
     
   })
   .catch(function (error) {
@@ -63,6 +63,7 @@ export default {
        var src = Path+'/getfile.php?path='+this.data.pic;
       //var images = require.context('../../public/images', false)
     //return images('./' + this.data.pic)
+   
     return src;
     }
   }
@@ -72,3 +73,10 @@ export default {
 
 
 </script>
+<style>
+.news{
+width: 80%;
+margin-left: auto;
+margin-right: auto;
+}
+</style>

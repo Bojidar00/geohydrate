@@ -13,7 +13,7 @@
       <el-input v-model="form.content" type="textarea"/>
     </el-form-item>
      <el-form-item label="Картинка">
-      <input type="file" ref="file" @change="handleFileUpload( $event )">
+      <input type="file" ref="file" @change="handleFileUpload( $event )" >
     </el-form-item>
      
     
@@ -32,11 +32,17 @@
   
   </el-col>
 
-  <el-col :span="10"  :offset="1">
- 
-<el-table :data="data.data" height="250" style="width: 300px">
+  <el-col :span="12"  :offset="1">
+ <el-input
+        v-model="search"
+        class="w-50 m-2"
+        placeholder="Търси"
+        :prefix-icon="Search"
+        @input="SearchNews"
+      />
+<el-table :data="data.data2" height="250" style="width: 800px">
 
-    <el-table-column prop="title" label="Име" width="150" />
+    <el-table-column prop="title" label="Име" width="360" />
    
     <el-table-column  label="" width="80">
       <template #default="scope">
@@ -48,7 +54,7 @@
     </el-table-column>
         <el-table-column  label="" width="50">
        <template #default="scope">
-        <el-button type="danger" :icon="Delete" circle @click="deleteNews(scope.row.news_id,scope.$index)" />
+        <el-button type="danger" :icon="Delete" circle @click="deleteNews(scope.row.news_id,scope.row.pic,scope.$index)" />
       </template>
     </el-table-column>
     
@@ -68,16 +74,17 @@ import { useRouter } from "vue-router";
 import { onBeforeMount } from 'vue'
 import {
   
-  Delete,
+  Delete, Search
  
 } from '@element-plus/icons-vue'
-
+const search = ref('');
  const file = ref(null);
-
 let edit = false;
 let editid=0;
 const data=reactive({
   data: [],
+  data2:[],
+ 
 })
 const router =useRouter();
 onBeforeMount( ()=>{
@@ -86,15 +93,26 @@ onBeforeMount( ()=>{
   }
   loadData();
 })
-
+function SearchNews(){
+  
+  data.data2=[];
+  data.data.forEach(element => {
+    if(element.title.startsWith(search.value)){
+      data.data2.push(element);
+    }
+  });
+  console.log(data.data2);
+  if(search.value===""){loadData();}
+}
 
 async function loadData(){
   await axios.get(`${Path}/allnews.php`)
   .then((response)=> {
    
-    console.log(response);
+    
     data.data=response.data;
-    console.log(data);
+    data.data2=response.data;
+    
   })
   
 }
@@ -104,21 +122,27 @@ const clean = () => {
   
   editid=0;
   edit = false;
+  
 
 }
 const editNews = (id,index) => {
   form.title=data.data[index].title;
   form.content=data.data[index].content;
+   form.path=data.data[index].pic;
   editid=id;
   edit = true;
+ 
 
 }
-const deleteNews = (id,index) => {
+const deleteNews = (id,path,index) => {
   let formData = new FormData();
+  formData.append('username', sessionStorage.username);
+   formData.append('password', sessionStorage.pass);
    formData.append('id', id);
+    formData.append('path', path);
   
  
-   axios.post(`${Path}/deletenews.php`,formData,{params:{name:"admin",pass:"admin"}})
+   axios.post(`${Path}/deletenews.php`,formData,)
   .then((response)=> {
     
     console.log(response);
@@ -127,33 +151,41 @@ const deleteNews = (id,index) => {
     
    
   });
- data.data.splice(index, 1);
+  data.data2.splice(index, 1);
+ data.data.forEach(function(element, index, object) {
+  
+   if(element.news_id===id){
+     object.splice(index, 1);
+   }
+ }); 
+ 
 }
 
 
 
-//const data=reactive({
-//  wrongPass: false,
-//})
-// do not use same name with ref
+
 const form = reactive({
   title: '',
   content:'',
   pic:'',
+  path:'',
  
   
 })
 const handleFileUpload = (event)=> {
   file.value=event.target.files[0];
-  console.log(event.target.files);
+ 
   
 }
 const onSubmit = () => {
 
    let formData = new FormData();
+   formData.append('username', sessionStorage.username);
+   formData.append('password', sessionStorage.pass);
    formData.append('id', editid);
-   formData.append('title', form.title);
-   formData.append('content', form.content);
+   formData.append('title', form.title.replace(/'/g, "''"));
+   formData.append('content', form.content.replace(/'/g, "''"));
+   formData.append('path', form.path);
    formData.append('file', file.value);
  
    if(edit == false){
@@ -163,18 +195,18 @@ const onSubmit = () => {
                 }
               })
   .then((response)=> {
-    
     console.log(response);
+    
     
    loadData();
     
    
   });
  }else{
-   axios.post(`${Path}/updatenews.php`,formData,{params:{name:"admin",pass:"admin"}})
+   axios.post(`${Path}/updatenews.php`,formData)
   .then((response)=> {
-    
     console.log(response);
+    
     
    loadData();
     

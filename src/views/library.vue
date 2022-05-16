@@ -1,11 +1,9 @@
 <template>
-  <div class="about">
-    <h1>Библиотека</h1>
-  </div>
+  
 
 
 <table v-for="file in files" :key="file.file_id" class="table">
-<tr><library-element :name="file.name" :path="file.path"></library-element></tr>
+<tr><library-element :name="file.name" :description="file.description" :path="file.path"></library-element></tr>
 </table>
 
 <el-pagination background layout="prev, pager, next" :total="tot" :page-size="10"   @current-change="show" />
@@ -30,11 +28,13 @@ export default {
      page:1,
      tot:0,
      files:[],
+     
     }
   },
   mounted(){
 this.loadCount();
 this.loadFiles();
+
 
   },
   methods:{
@@ -43,7 +43,7 @@ this.loadFiles();
       var Index = require('../../public/otchet_e1.pdf');
       window.open(Index);
     },
-
+ 
     test2(){
       axios.get(`${Path}/kolektiv.php`)
   .then(function (response) {
@@ -69,7 +69,7 @@ this.loadFiles();
       await axios.get(`${Path}/getfilecount.php`)
   .then((response)=> {
     this.tot=Number(response.data[0].count);
-    console.log(response.data[0].count);
+    
     
   })  
  

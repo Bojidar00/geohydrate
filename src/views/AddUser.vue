@@ -93,9 +93,9 @@ async function loadData(){
   await axios.get(`${Path}/getusers.php`)
   .then((response)=> {
    
-    console.log(response);
+    
     data.data=response.data;
-    console.log(data);
+    
   })
   
 }
@@ -136,10 +136,7 @@ const deleteUser = (id,index) => {
 
 
 
-//const data=reactive({
-//  wrongPass: false,
-//})
-// do not use same name with ref
+
 const form = reactive({
   name: '',
   pass:'',

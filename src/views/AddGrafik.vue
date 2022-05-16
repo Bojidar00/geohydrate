@@ -18,13 +18,14 @@
       multiple
       collapse-tags
       placeholder="Избери"
-      style="width: 240px"
+      style="width: 260px "
     >
       <el-option
         v-for="item in options"
         :key="item.value"
         :label="item.label"
         :value="item.value"
+        style="font-family: Arial, Helvetica, sans-serif;"
       />
     </el-select>
     </el-form-item>
@@ -49,11 +50,11 @@
   
   </el-col>
 
-  <el-col :span="10"  :offset="1">
+  <el-col :span="12"  :offset="1">
  
 <el-table :data="data.data2" height="250" style="width: 800px">
 
-    <el-table-column prop="activity" label="Дейност" width="150" />
+    <el-table-column prop="activity" label="Дейност" width="360" />
     <el-table-column  label="" width="80">
       <template #default="scope">
         <el-button type="text" size="small" @click="editGrafik(scope.row.grafik_id,scope.$index)"
@@ -107,7 +108,7 @@ onBeforeMount( ()=>{
 
 function AddResult(){
   form.results.push({id:++results_count});
-  console.log(form.results);
+  
 }
 
 async function loadData(){
@@ -115,9 +116,9 @@ async function loadData(){
   await axios.get(`${Path}/getgrafik.php`)
   .then((response)=> {
    
-    console.log(response);
+    
     data.data2=response.data;
-    console.log(data);
+    
    
   })
 }
@@ -125,9 +126,9 @@ async function loadData2(){
 await axios.get(`${Path}/kolektiv.php`)
   .then((response)=> {
    
-    console.log(response);
+    
     data.data=response.data;
-    console.log(data);
+    
     
     data.data.forEach(element => {
       options.push({label: element.name, value: element.pearson_id});
@@ -163,13 +164,13 @@ const editGrafik = (id,index) => {
    axios.post(`${Path}/getgrafikresult.php`,formData)
   .then((response)=> {
     let data=response.data;
-     console.log(data);
+     
     form.results=[];
     data.forEach(element => {
       formData.append('id', element[0]);
        axios.post(`${Path}/getresult.php`,formData)
   .then((response)=> { 
-    console.log(response.data);
+    
    response.data.forEach(element => {
      form.results.push({id:element[0],value:element[1]})
    });
@@ -185,9 +186,10 @@ const editGrafik = (id,index) => {
 
 }
 const deleteGrafik = (id,index) => {
-  console.log(id);
-  console.log(index);
+  
   let formData = new FormData();
+  formData.append('username', sessionStorage.username);
+   formData.append('password', sessionStorage.pass);
    formData.append('id', id);
   
  
@@ -205,10 +207,7 @@ const deleteGrafik = (id,index) => {
 
 
 
-//const data=reactive({
-//  wrongPass: false,
-//})
-// do not use same name with ref
+
 const form = reactive({
   activity: '',
   deadline:'',
@@ -219,28 +218,33 @@ const form = reactive({
 const onSubmit = () => {
 
    let formData = new FormData();
+    formData.append('username', sessionStorage.username);
+   formData.append('password', sessionStorage.pass);
    formData.append('id', editid);
-   formData.append('activity', form.activity);
-   formData.append('deadline', form.deadline);
+   formData.append('activity', form.activity.replace(/'/g, "''"));
+   formData.append('deadline', form.deadline.replace(/'/g, "''"));
    formData.append('kolektiv', JSON.stringify(value2.value));
+   form.results.forEach(element => {
+     element.value.replace(/'/g, "''");
+   });
    formData.append('results', JSON.stringify(form.results));
 
    if(edit == false){
    axios.post(`${Path}/addgrafik.php`,formData)
   .then((response)=> {
-    
     console.log(response);
+    
     
    loadData();
     
    
   });
  }else{
-   console.log(form.results);
+   
    axios.post(`${Path}/updategrafik.php`,formData)
   .then((response)=> {
-    
     console.log(response);
+    
     
    loadData();
     

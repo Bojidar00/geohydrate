@@ -7,7 +7,7 @@
 
 <el-form :model="form" label-width="120px" >
     <el-form-item label="Резюме">
-      <el-input v-model="form.summary" type="textarea"/>
+      <el-input v-model="form.summary" type="textarea" />
     </el-form-item>
     <el-form-item label="Цел">
       <el-input v-model="form.purpose" type="textarea"/>
@@ -78,9 +78,9 @@ async function loadData(){
   await axios.get(`${Path}/getallwebsitedata.php`)
   .then((response)=> {
    
-    console.log(response);
+    
     data.data=response.data;
-    console.log(data);
+    
   })
   form.id=data.data[0].website_id;
   form.summary=data.data[0].Summary;
@@ -125,13 +125,15 @@ const form = reactive({
 const onSubmit = () => {
 
    let formData = new FormData();
+    formData.append('username', sessionStorage.username);
+   formData.append('password', sessionStorage.pass);
    formData.append('id', form.id);
-   formData.append('summary', form.summary);
-   formData.append('purpose', form.purpose);
-   formData.append('meaning', form.meaning);
-   formData.append('challenges', form.challenges);
-   formData.append('scientific_field', form.scientific_field);
-   formData.append('about', form.about);
+   formData.append('summary', form.summary.replace(/'/g, "''"));
+   formData.append('purpose', form.purpose.replace(/'/g, "''"));
+   formData.append('meaning', form.meaning.replace(/'/g, "''"));
+   formData.append('challenges', form.challenges.replace(/'/g, "''"));
+   formData.append('scientific_field', form.scientific_field.replace(/'/g, "''"));
+   formData.append('about', form.about.replace(/'/g, "''"));
  
 
    axios.post(`${Path}/updatewebsite.php`,formData)
@@ -153,4 +155,8 @@ label {display: inline !important;
         width: 160px !important;}
 
 
+::-webkit-scrollbar{display:inline !important;}
+textarea{
+  resize: both;
+}
 </style>

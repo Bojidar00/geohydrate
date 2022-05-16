@@ -16,8 +16,8 @@
        </table>
       </template>
     </el-table-column>
-    <el-table-column label="Дейности" prop="activity" />
-    <el-table-column label="Срок в месеци" prop="deadline" />
+    <el-table-column :label="data.activities" prop="activity" />
+    <el-table-column :label="data.term" prop="deadline" />
   </el-table>
 </template>
 <script  setup>
@@ -27,18 +27,29 @@ import { onBeforeMount } from 'vue'
 import {reactive } from 'vue'
 //import { result } from 'lodash';
 const data=reactive({
-  data: [],});
+  data: [],
+  activities:'Дейности',
+  term:'Срок в месеци'});
 onBeforeMount( ()=>{
   loadData();
-   
+   changeLang();
 })
+function changeLang(){
+  if(sessionStorage.lang){
+    if(sessionStorage.lang==="en"){
+      data.activities="Activities";
+      data.term="Term in months";
+      
+    }
+  }
+}
 async function loadData(){
  
    await axios.get(`${Path}/getallgrafik.php`)
   .then((response)=> {
    
-    console.log(response);
-    //let cid=0;
+    
+    
     let last_result=[];
     let last_pearson=[];
    response.data.forEach(element => {
@@ -66,20 +77,15 @@ async function loadData(){
     }
     
    });
-  /* data.forEach(element => {
-     tableData2.push(element);
-   }); */
+  
     
-   console.log(data.data);
-  // console.log(data);
+   
+
   })
-   console.log(data.data);
-   //data.data.push({activity:'',deadline:'',contractors:[],results:[]});
+  
+  
    
 }
 
-/*let tableData2 = [{activity: " РП.1 - Анализ на информация",deadline:"до 30.VI.2019, 6 м.",contractors:["	доц. д-р Атанас Василев","доц. д-р Орлин Димитров","доц. д-р Иван Генов","доц. д-р Димитър Димитров","инж. Петър Пецински","доц. д-р Никола Ботушаров","д-р Данаил Йовчев","Росица Пехливанова, магистър"],results:["База данни ГЕОХидрат.","Обучение/обработка на сеизмични записи - Schlumberger Petrel; 3D ГХН.","Входни данни на многопараметричен симулационен модел – Schlumberger PetroMod.","Детайлна програма и график на Проекта."] },
-{activity:"РП.2 - Изследвания",deadline:"до 31.III.2020, 9 м.",contractors:["доц. д-р Атанас Василев","доц. д-р Иван Генов","доц. д-р Никола Ботушаров","д-р Данаил Йовчев"],results:["Оценка на влиянието на физическите параметри на аномалиите на температурата и топлинния поток при формиране на ГХН; таблици, графики и карти.","4D модел на ГХН и измеримите аномалии на температурата и топлинния поток; псевдо 3D изображения."]},
-{activity:" РП.3 - Права задача, публикации",deadline:"до 30.VI.2020, 3 м.",contractors:["	доц. д-р Атанас Василев","доц. д-р Орлин Димитров","доц. д-р Иван Генов","доц. д-р Димитър Димитров","инж. Петър Пецински","доц. д-р Никола Ботушаров","д-р Данаил Йовчев","Росица Пехливанова, магистър"],results:["Методи за определяне на аномалиите на температурата и топлинния поток.","Анализ на D1-D2 резултати, ресурсна оценка; GIS карти, разрези."," Обратна геотермична задача: теория и софтуер (списъци, таблици).","Отчет за Етап 1 на проекта."]}];
-*/
+
 </script>

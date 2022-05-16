@@ -3,7 +3,7 @@ $host = "localhost";
 $user = "root"; 
 $password = ""; 
 $dbname = "geohydrate"; 
-$id = '';
+
 
 $con = mysqli_connect($host, $user, $password,$dbname);
 
@@ -12,7 +12,7 @@ $method = $_SERVER['REQUEST_METHOD'];
 //$input = json_decode(file_get_contents('php://input'),true);
 
 
-header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Origin: localhost');
 
 header('Access-Control-Allow-Methods: GET, POST');
 
@@ -24,6 +24,13 @@ if (!$con) {
   die("Connection failed: " . mysqli_connect_error());
 }
 
+
+$username = $_POST["username"];
+      $password = $_POST["password"];
+      $sql1 =  "select access as ac from users where username = '$username' AND password = '$password'";
+      $result1 = mysqli_query($con,$sql1);
+      $ac=(object) mysqli_fetch_object($result1);
+      if($ac->ac==1 || $ac->ac==2 ){
 
 switch ($method) {
     case 'POST':
@@ -63,7 +70,7 @@ foreach ($kolektiv as $value){
   $res = mysqli_query($con,$sql);
 }
 
-
+      }
 // die if SQL statement failed
 if (!$result) {
   http_response_code(404);
@@ -71,14 +78,14 @@ if (!$result) {
 }
 
 if ($method == 'POST') {
-    if (!$id) echo '[';
+     echo '[';
     for ($i=0 ; $i<mysqli_num_rows($last_id) ; $i++) {
       echo ($i>0?',':'').json_encode(mysqli_fetch_object($last_id));
       echo json_encode($value);
       echo json_encode($kolektiv);
       
     }
-    if (!$id) echo ']';
+     echo ']';
   } elseif ($method == 'POST') {
     echo json_encode($result);
   } else {

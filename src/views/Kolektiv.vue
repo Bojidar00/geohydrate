@@ -1,10 +1,10 @@
 <template>
-  <div class="about">
-    <h1>Колектив</h1>
-  </div>
-  <table>
-    <tr v-for="d in data" :key="d.id">
-  <PearsonCard :data="d"/>
+ 
+  <table class="center">
+    <tr v-for="d in data" :key="d.id" >
+   
+  <PearsonCard :data="d" />
+ 
   </tr>
   </table>
 </template>
@@ -30,14 +30,16 @@ export default {
   async fetchData(){
   await axios.get(`${Path}/kolektiv.php?`)
   .then((response)=> {
-   
-    console.log(response);
+    console.log(response.data);
+    
     this.data=response.data;
   })
   },
+
   },
   mounted(){
    this.fetchData();
+  
   }
   
   
@@ -45,3 +47,9 @@ export default {
  
 }
 </script>
+<style> 
+.center{
+  margin-left: auto;
+  margin-right: auto;
+}
+</style>

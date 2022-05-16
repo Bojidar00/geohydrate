@@ -29,10 +29,9 @@ async function loadData(){
   await axios.get(`${Path}/getAbout.php`)
   .then((response)=> {
    
-    console.log(response);
+   
     data.data=response.data[0].about;
-    console.log(data);
-    console.log(data.data);
+    
   })
   
 }

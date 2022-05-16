@@ -1,35 +1,33 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>Page</title>
-    </head>
-
-<body>
 <?php
 
+ 
 $host= 'localhost';
 $dbUser= 'root'; 
 $dbPass= ''; 
 
 if(!$dbConn=mysqli_connect($host, $dbUser, $dbPass)) {
- die('Не може да се осъществи връзка със сървъра.');
-}
- $sql = 'CREATE Database geohydrate';
- if (!$queryResource=mysqli_query($dbConn,$sql))
- {
-    die ('Грешка при създаване на базата данни: ');
+  die('Не може да се осъществи връзка със сървъра.');
  }
- 
- include "config.php";
+  $sql = 'CREATE Database geohydrate';
+  if (!$queryResource=mysqli_query($dbConn,$sql))
+  {
+     die ('Грешка при създаване на базата данни: ');
+  }
+  
+  if (!mysqli_select_db($dbConn,'geohydrate'))
+  {
+  die('Не може да се селектира базата от данни.');
+  }
 
  $sql2 ="CREATE TABLE `pearson` (
     `pearson_id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    `name` varchar(100) NOT NULL,
-    `job_location` varchar(100) NOT NULL,
-    `education` varchar(100),
-    `last_job` varchar(100),
-    `job` varchar(100),
-    `email` varchar(100) NOT NULL
+    `name` TEXT NOT NULL,
+    `job_location` TEXT NOT NULL,
+    `education` TEXT,
+    `last_job` TEXT,
+    `job` TEXT,
+    `email` varchar(100) NOT NULL,
+    `pic` varchar(100)
   ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
     $result = mysqli_query($dbConn,$sql2);
     if(!$result)
@@ -74,6 +72,7 @@ if(!$dbConn=mysqli_connect($host, $dbUser, $dbPass)) {
         $sql2 ="CREATE TABLE `files` (
           `file_id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
           `name` varchar(100) NOT NULL,
+          `description` TEXT(100) NOT NULL,
           `access` int NOT NULL,
           `path` varchar(100) NOT NULL
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
@@ -140,28 +139,14 @@ if(!$dbConn=mysqli_connect($host, $dbUser, $dbPass)) {
 
     
 
-      $sql3 ="INSERT INTO pearson (name,job_location, education,last_job,job,email)
-      VALUES ('доц. д-р Орлин Димитров','Институт по океанология при БАН, гр. Варна, Секция: Морска геология и археология','Магистър, 1982 г. - МГУ, гр. София - Геология и проучване на полезни изкопаеми, Доктор, 1997 г. - РАН, Институт по физика на Земята, гр. Москва,','Доцент в ИО-БАН','Сеизмостратиграфия, Неотектоника, Океанология, Морска геология, Геоморфология.','ovdimitrov@gmail.com');";
-        $result = mysqli_query($dbConn,$sql3);
-        if(!$result)
-        die('Грешка при insert.');
-        echo "  Insert!"; 
-        $sql3 ="INSERT INTO pearson (name,job_location, education,last_job,job,email)
-        VALUES ('доц. д-р Орлин Димитров','Институт по океанология при БАН, гр. Варна, Секция: Морска геология и археология','Магистър, 1982 г. - МГУ, гр. София - Геология и проучване на полезни изкопаеми, Доктор, 1997 г. - РАН, Институт по физика на Земята, гр. Москва,','Доцент в ИО-БАН','Сеизмостратиграфия, Неотектоника, Океанология, Морска геология, Геоморфология.','ovdimitrov@gmail.com');";
-          $result = mysqli_query($dbConn,$sql3);
-          if(!$result)
-          die('Грешка при insert.');
-          echo "  Insert!"; 
-          $sql3 ="INSERT INTO news (title,content,pic)
-          VALUES ('Тест новина','дадва ажксладйжа дсйаодиайжосдхажи дйалжсйдоадйоасожд','Logo_IO.gif');";
+       
+       
+          $sql3 ="INSERT INTO `website_data`(`website_id`, `about`, `Summary`, `Purpose`, `Meaning`, `Challenges`, `Scientific field`)
+           VALUES ('','','','','','','')";
             $result = mysqli_query($dbConn,$sql3);
             if(!$result)
             die('Грешка при insert.');
-            $sql3 ="INSERT INTO news (title,content,pic)
-            VALUES ('Тест новина2','asdsadasda asd asda дадва ажксладйжа дсйаодиайжосдхажи дйалжсйдоадйоасожд','Logo_IO.gif');";
-              $result = mysqli_query($dbConn,$sql3);
-              if(!$result)
-              die('Грешка при insert.');
+           
             echo "  Insert!";
             $sql3 ="INSERT INTO users (username,password,access)
             VALUES ('AVasilev','bcb52b932993bd3ca490bb2cb238c3ccf9a8cea7',1);";

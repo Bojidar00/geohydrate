@@ -63,12 +63,12 @@ const onSubmit = () => {
    let formData = new FormData();
    formData.append('name', form.name);
    formData.append('pass', hash(form.pass));
-   console.log(hash(form.pass));
-  console.log('submit!');
+   
+  
    axios.post(`${Path}/login.php`,formData,{params:{name:"admin",pass:"admin"}})
   .then((response)=> {
     
-    console.log(response);
+    
     
   
     if(response.data[0]!=null){

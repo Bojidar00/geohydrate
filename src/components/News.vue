@@ -30,7 +30,10 @@ export default {
   },
   methods:{
     showNews(id){
-      this.$router.push({path: `/News/${id}`});
+      //this.$router.push({path: `/News/${id}`});
+
+      let routeData = this.$router.resolve({path: `/News/${id}`});
+      window.open(routeData.href);
     },
     getImgUrl(){
       var src = Path+'/getfile.php?path='+this.img;
